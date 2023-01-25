@@ -1,0 +1,98 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@1268.v6eb_e2ee1a_85a">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2118.v31fd5b_9944b_5"/>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2118.v31fd5b_9944b_5">
+      <jobProperties/>
+      <triggers/>
+      <parameters/>
+      <options/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+    <description/>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty plugin="gitlab-plugin@1.6.0">
+        <gitLabConnection/>
+        <jobCredentialId/>
+      <useAlternativeCredential>false</useAlternativeCredential>
+    </com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3606.v0b_d8b_e512dcf">
+    <script>pipeline {
+    agent {
+        docker {
+            image &apos;ubuntu&apos;
+            args &apos;-u root:sudo -v $HOME/workspace/myproject:/myproject&apos;
+        }
+    }
+    stages {
+        stage(&quot;setup_env&quot;) {
+            steps {
+                sh &apos;apt-get update -y&apos;
+                sh &apos;apt-get install -y ca-certificates curl gnupg lsb-release wget&apos;
+                sh &apos;mkdir -p /etc/apt/keyrings&apos;
+                sh &apos;curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --batch --yes --dearmor -o /etc/apt/keyrings/docker.gpg&apos;
+                sh &apos;echo &quot;deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable&quot; | tee /etc/apt/sources.list.d/docker.list &gt; /dev/null&apos;
+                sh &apos;apt-get update -y&apos;
+                sh &apos;apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin&apos;
+                sh &apos;update-alternatives --set iptables /usr/sbin/iptables-legacy&apos;
+                sh &apos;update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy&apos;
+                sh &apos;wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64&apos;
+                sh &apos;chmod a+x /usr/local/bin/yq&apos;
+            }
+        }
+        stage(&quot;docker_start&quot;) {
+            steps {
+                sh &apos;docker info&apos;
+                sh &apos;/etc/init.d/docker start&apos;
+            }
+        }
+        stage(&quot;docker-compose_setup&quot;) {
+            steps {
+                sh &apos;curl -L &quot;https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)&quot; -o /usr/local/bin/docker-compose&apos;
+                sh &apos;chmod +x /usr/local/bin/docker-compose&apos;
+                sh &apos;docker-compose --version&apos;
+            }
+        }
+        stage(&quot;create_directory&quot;) {
+            steps {
+                sh &apos;mkdir -p projects &amp;&amp; cd projects&apos;
+            }
+        }
+
+        stage(&quot;clone_netbox&quot;) {
+            steps {
+                sh &apos;git clone -b 2.3.0 https://github.com/netbox-community/netbox-docker.git&apos;
+                sh &apos;cd netbox-docker&apos;
+                sh &apos;yq -i \&apos;del(.services.netbox.volumes)\&apos;  netbox-docker/docker-compose.yml&apos;
+                sh &apos;yq -i \&apos;.services.netbox.healthcheck.timeout = &quot;10s&quot;\&apos; netbox-docker/docker-compose.yml&apos;
+                sh &apos;yq -i \&apos;.services.netbox-worker.healthcheck.timeout = &quot;10s&quot;\&apos; netbox-docker/docker-compose.yml&apos;
+                sh &apos;yq -i \&apos;.services.netbox-housekeeping.healthcheck.timeout = &quot;10s&quot;\&apos; netbox-docker/docker-compose.yml&apos;
+                sh &apos;yq -i \&apos;.services.netbox.ports[0] = &quot;8000:8080&quot;\&apos; &apos;
+            }
+        }
+
+        stage(&quot;docker-compose&quot;) {
+            steps {
+                sh &apos;pwd&apos;
+                sh &apos;docker-compose -f netbox-docker/docker-compose.yml pull&apos;
+                sh &apos;docker-compose -f netbox-docker/docker-compose.yml up -d&apos;
+            }
+        }
+    }
+    post {
+        success {
+            echo &apos;Do something when it is successful&apos;
+            sh &apos;rm -r netbox-docker&apos;
+        }
+        failure {
+            echo &apos;Do something when it is failed&apos;
+            sh &apos;rm -r netbox-docker&apos;
+        }
+    }
+}</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
