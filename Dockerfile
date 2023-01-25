@@ -6,6 +6,11 @@ ENV JENKINS_PASS admin
 EXPOSE 22
 EXPOSE 8080/tcp
 COPY plugins.txt /usr/share/jenkins/plugins.txt
+RUN mkdir -p /var/jenkins_home/jobs/test_job
+COPY jenkinsfiles/config.xml /var/jenkins_home/jobs/test_job/config.xml
+RUN mkdir -p /var/jenkins_home/jpbs/test_job/workspace
+COPY jenkinsfiles/setup_netbox_env.sh /var/jenkins_home/jpbs/test_job/workspace/setup_netbox_env.sh
+COPY 
 RUN jenkins-plugin-cli -f usr/share/jenkins/plugins.txt --verbose
 
 ARG user=jenkins
