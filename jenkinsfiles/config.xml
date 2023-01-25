@@ -29,17 +29,7 @@
     stages {
         stage(&quot;setup_env&quot;) {
             steps {
-                sh &apos;apt-get update -y&apos;
-                sh &apos;apt-get install -y ca-certificates curl gnupg lsb-release wget&apos;
-                sh &apos;mkdir -p /etc/apt/keyrings&apos;
-                sh &apos;curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --batch --yes --dearmor -o /etc/apt/keyrings/docker.gpg&apos;
-                sh &apos;echo &quot;deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable&quot; | tee /etc/apt/sources.list.d/docker.list &gt; /dev/null&apos;
-                sh &apos;apt-get update -y&apos;
-                sh &apos;apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin&apos;
-                sh &apos;update-alternatives --set iptables /usr/sbin/iptables-legacy&apos;
-                sh &apos;update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy&apos;
-                sh &apos;wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64&apos;
-                sh &apos;chmod a+x /usr/local/bin/yq&apos;
+                sh &apos;setup_netbox_env.sh&apos;
             }
         }
         stage(&quot;docker_start&quot;) {
