@@ -12,5 +12,3 @@ services:
     user: jenkins
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./jenkinsfiles/config.xml:/var/jenkins_home/jobs/test_job/config.xml
-      - ./jenkinsfiles/setup_netbox_env.sh:/var/jenkins_home/workspace/test_job/setup_netbox_env.sh
