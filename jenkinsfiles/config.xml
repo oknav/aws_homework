@@ -29,7 +29,7 @@
     stages {
         stage(&quot;setup_env&quot;) {
             steps {
-                sh &apos;setup_netbox_env.sh&apos;
+                sh &apos;bash ./setup_netbox_env.sh&apos;
             }
         }
         stage(&quot;docker_start&quot;) {
