@@ -45,12 +45,6 @@
                 sh &apos;docker-compose --version&apos;
             }
         }
-        stage(&quot;create_directory&quot;) {
-            steps {
-                sh &apos;mkdir -p projects &amp;&amp; cd projects&apos;
-            }
-        }
-
         stage(&quot;clone_netbox&quot;) {
             steps {
                 sh &apos;git clone -b 2.3.0 https://github.com/netbox-community/netbox-docker.git&apos;
