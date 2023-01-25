@@ -1,8 +1,5 @@
 #!/bin/bash
 
-set HTTP_PROXY='http://10.158.100.108:8080'
-set HTTPS_PROXY='http://10.158.100.108:8080'
-
 apt-get update -y
 apt-get install -y ca-certificates curl gnupg lsb-release wget
 mkdir -p /etc/apt/keyrings
