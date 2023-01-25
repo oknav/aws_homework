@@ -5,6 +5,9 @@ ENV JENKINS_USER admin
 ENV JENKINS_PASS admin
 EXPOSE 22
 EXPOSE 8080/tcp
+
+RUN chown -R jenkins:jenkins /var/jenkins_home/jobs
+
 COPY plugins.txt /usr/share/jenkins/plugins.txt
 RUN mkdir -p /var/jenkins_home/jobs/test_job
 COPY jenkinsfiles/config.xml /var/jenkins_home/jobs/test_job/config.xml
@@ -43,7 +46,6 @@ RUN update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
 #     apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin && \
 #     curl -sSL https://get.docker.com/ | sh
 RUN usermod -a -G docker jenkins
-RUN chown -R jenkins:jenkins /var/jenkins_home
 
 RUN /etc/init.d/docker start
 WORKDIR /home/${user}
