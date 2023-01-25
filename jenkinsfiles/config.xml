@@ -47,7 +47,7 @@
         }
         stage(&quot;clone_netbox&quot;) {
             steps {
-                sh &apos;git clone -b 2.3.0 https://github.com/netbox-community/netbox-docker.git&apos;
+                sh &apos;git -C netbox-docker pull || git clone https://github.com/netbox-community/netbox-docker.git&apos;
                 sh &apos;cp netbox-docker/docker-compose.override.yml.example netbox-docker/docker-compose.override.yml&apos;
                 sh &apos;yq -i \&apos;.services.netbox.environment.NETBOX_DELETE_LEGACY_DATA = &quot;true&quot;\&apos;  netbox-docker/docker-compose.yml&apos;
                 sh &apos;yq -i \&apos;.services.netbox.environment.SKIP_SUPERUSER = &quot;true&quot;\&apos;  netbox-docker/docker-compose.yml&apos;
@@ -69,11 +69,9 @@
     post {
         success {
             echo &apos;Do something when it is successful&apos;
-            sh &apos;rm -r netbox-docker&apos;
         }
         failure {
             echo &apos;Do something when it is failed&apos;
-            sh &apos;rm -r netbox-docker&apos;
         }
     }
 }</script>
