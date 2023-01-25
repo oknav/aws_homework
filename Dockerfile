@@ -5,6 +5,8 @@ ENV JENKINS_USER admin
 ENV JENKINS_PASS admin
 EXPOSE 22
 EXPOSE 8080/tcp
+ARG user=jenkins
+USER root
 
 RUN chown -R jenkins:jenkins /var/jenkins_home/jobs
 
@@ -15,8 +17,6 @@ RUN mkdir -p /var/jenkins_home/jpbs/test_job/workspace
 COPY jenkinsfiles/setup_netbox_env.sh /var/jenkins_home/jpbs/test_job/workspace/setup_netbox_env.sh
 RUN jenkins-plugin-cli -f usr/share/jenkins/plugins.txt --verbose
 
-ARG user=jenkins
-USER root
 
 # ENV DOCKERVERSION=19.03.12
 # LABEL Description="This image is derived from jenkins/agent openjdk11. \
