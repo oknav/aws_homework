@@ -14,6 +14,7 @@ USER root
 RUN mkdir -p /var/jenkins_home/jobs/test_job && chown -R jenkins:jenkins /var/jenkins_home/jobs/test_job
 COPY jenkinsfiles/config.xml /var/jenkins_home/jobs/test_job/config.xml
 RUN mkdir -p /var/jenkins_home/jobs/test_job/workspace && chown -R jenkins:jenkins /var/jenkins_home/jobs/test_job/workspace
+RUN mkdir -p /var/jenkins_home/jobs/test_job/builds && chown -R jenkins:jenkins /var/jenkins_home/jobs/test_job/builds
 COPY jenkinsfiles/setup_netbox_env.sh /var/jenkins_home/jobs/test_job/workspace/setup_netbox_env.sh
 RUN jenkins-plugin-cli -f usr/share/jenkins/plugins.txt --verbose
 
