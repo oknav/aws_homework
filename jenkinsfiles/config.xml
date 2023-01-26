@@ -52,6 +52,9 @@
                 sh &apos;yq -i \&apos;.services.netbox.environment.NETBOX_DELETE_LEGACY_DATA = &quot;true&quot;\&apos;  netbox-docker/docker-compose.yml&apos;
                 sh &apos;yq -i \&apos;.services.netbox.environment.SKIP_SUPERUSER = &quot;true&quot;\&apos;  netbox-docker/docker-compose.yml&apos;
                 sh &apos;yq -i \&apos;.services.netbox.restart = &quot;unless-stopped&quot;\&apos; netbox-docker/docker-compose.override.yml&apos;
+                sh &apos;yq -i \&apos;.services.netbox.healthcheck.start_period = &quot;100s&quot;\&apos; netbox-docker/docker-compose.yml&apos;
+                sh &apos;yq -i \&apos;.services.netbox-worker.healthcheck.start_period = &quot;40s&quot;\&apos; netbox-docker/docker-compose.yml&apos;
+                sh &apos;yq -i \&apos;.services.netbox-housekeeping.healthcheck.start_period = &quot;40s&quot;\&apos; netbox-docker/docker-compose.yml&apos;
                 sh &apos;yq -i \&apos;.services.netbox.healthcheck.timeout = &quot;10s&quot;\&apos; netbox-docker/docker-compose.yml&apos;
                 sh &apos;yq -i \&apos;.services.netbox-worker.healthcheck.timeout = &quot;10s&quot;\&apos; netbox-docker/docker-compose.yml&apos;
                 sh &apos;yq -i \&apos;.services.netbox-housekeeping.healthcheck.timeout = &quot;10s&quot;\&apos; netbox-docker/docker-compose.yml&apos;
@@ -72,6 +75,7 @@
         }
         failure {
             echo &apos;Do something when it is failed&apos;
+            sh &apos;rm -r netbox-docker&apos;
         }
     }
 }</script>
