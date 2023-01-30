@@ -50,6 +50,6 @@ RUN update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
 RUN usermod -a -G docker jenkins
 RUN chown -R jenkins:jenkins /var/jenkins_home
 
-RUN service docker start
+# RUN service docker start
 WORKDIR /home/${user}
 USER ${user}
