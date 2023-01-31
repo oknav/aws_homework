@@ -35,7 +35,6 @@
         stage(&quot;docker_start&quot;) {
             steps {
                 sh &apos;docker info&apos;
-                sh &apos;/etc/init.d/docker start&apos;
             }
         }
         stage(&quot;docker-compose_setup&quot;) {
