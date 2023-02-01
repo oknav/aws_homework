@@ -53,3 +53,7 @@ RUN chown -R jenkins:jenkins /var/jenkins_home
 # RUN service docker start
 WORKDIR /home/${user}
 USER ${user}
+ENV JENKINS_URL "http://localhost:8080"
+RUN curl --insecure ${JENKINS_URL}/jnlpJars/jenkins-cli.jar \
+   --output /jenkins/jenkins-cli.jar
+CMD ["java","-jar","/jenkins/jenkins-cli.jar","-noCertificateCheck","-noKeyAuth"]
